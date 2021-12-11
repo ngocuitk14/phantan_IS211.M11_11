@@ -1,0 +1,125 @@
+-- Tạo và gán quyền cho user cn1
+
+CREATE USER cn1 IDENTIFIED BY cn1;
+GRANT CONNECT, DBA TO cn1;
+
+-- Kết nối đến user cn1
+
+connect cn1/cn1;
+
+CREATE TABLE SACH(
+  MaSach varchar2(8) PRIMARY KEY,
+  TenSach varchar2(100),
+  NgayXB date,
+  TacGia varchar2(40),
+  GiaTien number,
+  NhaXuatBan varchar2(40),
+  LanIn number
+);
+CREATE TABLE CHINHANH(
+  MaChiNhanh varchar2(8) PRIMARY KEY,
+  TenChiNhanh varchar2(30),
+  SoDT varchar2(11)
+);
+CREATE TABLE KHOSACH_QLKHO(
+  MaChiNhanh varchar2(8),
+  MaSach varchar2(8),
+  SoLuong number,
+  NgayCapNhat date
+);
+CREATE TABLE KHOSACH_NVBH(
+  MaChiNhanh varchar2(8),
+  MaSach varchar2(8),
+  TinhTrang varchar2(10),
+  KhuyenMai number
+);
+CREATE TABLE NHANVIEN(
+  MaNV varchar2(8) PRIMARY KEY,
+  TenNV varchar2(30),
+  DiaChi varchar2(30),
+  SoDT varchar2(11),
+  Luong number,
+  MaChiNhanh varchar2(8)
+);
+
+ALTER SESSION SET NLS_DATE_FORMAT = 'DD/MM/YY HH24:MI:SS';
+
+ALTER TABLE KHOSACH_QLKHO 
+ADD CONSTRAINT FK_QLKHO_CHINHANH FOREIGN KEY (MaChiNhanh)
+REFERENCES CHINHANH(MaChiNhanh);
+
+ALTER TABLE KHOSACH_NVBH
+ADD CONSTRAINT FK_NVBH_CHINHANH FOREIGN KEY (MaChiNhanh)
+REFERENCES CHINHANH(MaChiNhanh);
+
+ALTER TABLE KHOSACH_QLKHO 
+ADD CONSTRAINT FK_QLKHO_SACH FOREIGN KEY (MaSach)
+REFERENCES SACH(MaSach);
+
+
+ALTER TABLE KHOSACH_NVBH 
+ADD CONSTRAINT FK_NVBH_SACH FOREIGN KEY (MaSach)
+REFERENCES SACH(MaSach);
+
+-- Thêm dữ liệu
+
+INSERT INTO SACH VALUES ('Book1','Đắc Nhân Tâm', to_date('29/10/2021','dd/mm/yyyy'), 'Dale Carnegie', 75000, 'NXB Tổng hợp TPHCM', 1);
+INSERT INTO SACH VALUES ('Book2', 'Mắt Biếc', to_date('22/10/2021','dd/mm/yyyy'), 'Nguyễn Nhật Ánh', 65000, 'Trẻ', 1);
+INSERT INTO SACH VALUES ('Book3', 'Tắt Đèn', to_date('19/10/2021','dd/mm/yyyy'), 'Ngô Tất Tố', 35000, 'Văn Học', 1);
+INSERT INTO SACH VALUES ('Book4', 'Người Trong Muôn Nghề', to_date('05/11/2021','dd/mm/yyyy'), 'Spiderum', 140000, 'Thế Giới', 1);
+INSERT INTO SACH VALUES ('Book5', 'Thám tử lừng danh Conan', to_date('11/10/2021','dd/mm/yyyy'), 'Aoyama Gosho', 19500, 'Kim Đồng', 2);
+INSERT INTO SACH VALUES ('Book6', 'Nhà Giả Kim', to_date('01/10/2021','dd/mm/yyyy'), 'Paulo Coelho', 19500, 'Văn Học', 2);
+INSERT INTO SACH VALUES ('Book7', 'Ba người thầy vĩ đại', to_date('12/12/2021','dd/mm/yyyy'), 'Robin Sharma', 86000, 'Lao Động', 1);
+INSERT INTO SACH VALUES ('Book8', 'Cha giàu cha nghèo', to_date('11/11/2021','dd/mm/yyyy'), 'Robert Kyosaki', 38000, 'Văn Hoá - Thông Tin', 3);
+INSERT INTO SACH VALUES ('Book9', 'Những tấm lòng cao cả', to_date('01/12/2021','dd/mm/yyyy'), 'Edmondo De Amicis', 60000, 'Văn Học', 1);
+INSERT INTO SACH VALUES ('Book10', 'Harry Potter và Hòn đá phù thuỷ', to_date('21/10/2021','dd/mm/yyyy'), 'JK Rowling', 108000, 'Trẻ', 4);
+INSERT INTO SACH VALUES ('Book11', 'Người giàu có nhất thành Babylon', to_date('26/10/2021','dd/mm/yyyy'), 'George S. Glason', 64500, 'NXB Tổng hợp TPHCM', 5);
+INSERT INTO SACH VALUES ('Book12', 'Nhà lãnh đạo không chức danh', to_date('26/11/2021','dd/mm/yyyy'), 'Robin Sharma', 80000, 'Trẻ', 2);
+INSERT INTO SACH VALUES ('Book13', 'Mật mã Da Vinci', to_date('11/11/2021','dd/mm/yyyy'), 'Dan Brown', 320000, 'Kim Đồng', 2);
+INSERT INTO SACH VALUES ('Book14', 'Không gia đình', to_date('01/12/2021','dd/mm/yyyy'), 'Hector Malot', 160000, 'Trẻ', 4);
+INSERT INTO SACH VALUES ('Book15', 'Những cuộc phiêu lưu của Tom Sawyer', to_date('21/11/2021','dd/mm/yyyy'), 'Mark Twain', 89000, 'Văn Học', 2);
+INSERT INTO SACH VALUES ('Book16', 'Tuần làm việc 4 giờ', to_date('12/10/2021','dd/mm/yyyy'), 'Timothy Ferriss', 88000, 'Lao Động', 3);
+INSERT INTO SACH VALUES ('Book17', 'Người bán hàng vĩ đại nhất thế giới', to_date('14/10/2021','dd/mm/yyyy'), 'Og Mandino', 96000, 'NXB Tổng hợp TPHCM', 1);
+INSERT INTO SACH VALUES ('Book18', 'Hành trình về phương đông', to_date('14/11/2021','dd/mm/yyyy'), 'Blair T. Spalding', 100000, 'Thế Giới', 3);
+INSERT INTO SACH VALUES ('Book19', 'Think and Grow Rich', to_date('09/11/2021','dd/mm/yyyy'), 'Napoleon Hill', 110000, 'Kim Đồng', 3);
+INSERT INTO SACH VALUES ('Book20', 'Đại gia Gatsby ', to_date('09/11/2021','dd/mm/yyyy'), 'F. Scott Fitzgerald', 47000, 'Hội Nhà Văn', 2);
+
+INSERT INTO CHINHANH VALUES ('CN01', 'Thủ Đức, TPHCM', '0734843672');
+
+INSERT INTO KHOSACH_QLKHO VALUES ('CN01', 'Book1', 0, to_date('29/10/2021','dd/mm/yyyy'));
+INSERT INTO KHOSACH_QLKHO VALUES ('CN01', 'Book3', 300, to_date('19/10/2021','dd/mm/yyyy'));
+INSERT INTO KHOSACH_QLKHO VALUES ('CN01', 'Book5', 180, to_date('11/10/2021','dd/mm/yyyy'));
+INSERT INTO KHOSACH_QLKHO VALUES ('CN01', 'Book8', 60, to_date('11/11/2021','dd/mm/yyyy'));
+INSERT INTO KHOSACH_QLKHO VALUES ('CN01', 'Book9', 0, to_date('01/12/2021','dd/mm/yyyy'));
+INSERT INTO KHOSACH_QLKHO VALUES ('CN01', 'Book11', 30, to_date('26/10/2021','dd/mm/yyyy'));
+INSERT INTO KHOSACH_QLKHO VALUES ('CN01', 'Book12', 200, to_date('26/11/2021','dd/mm/yyyy'));
+INSERT INTO KHOSACH_QLKHO VALUES ('CN01', 'Book14', 262, to_date('01/12/2021','dd/mm/yyyy'));
+INSERT INTO KHOSACH_QLKHO VALUES ('CN01', 'Book16', 148, to_date('12/10/2021','dd/mm/yyyy'));
+INSERT INTO KHOSACH_QLKHO VALUES ('CN01', 'Book19', 125, to_date('09/11/2021','dd/mm/yyyy'));
+INSERT INTO KHOSACH_QLKHO VALUES ('CN01', 'Book20', 0, to_date('09/11/2021','dd/mm/yyyy'));
+
+INSERT INTO KHOSACH_NVBH VALUES ('CN01', 'Book1', 'Het Hang', 0);
+INSERT INTO KHOSACH_NVBH VALUES ('CN01', 'Book3', 'Con Hang', 20);
+INSERT INTO KHOSACH_NVBH VALUES ('CN01', 'Book5', 'Con Hang', 20);
+INSERT INTO KHOSACH_NVBH VALUES ('CN01', 'Book8', 'Con Hang', 10);
+INSERT INTO KHOSACH_NVBH VALUES ('CN01', 'Book9', 'Het Hang', 10);
+INSERT INTO KHOSACH_NVBH VALUES ('CN01', 'Book11', 'Con Hang', 10);
+INSERT INTO KHOSACH_NVBH VALUES ('CN01', 'Book12', 'Con Hang', 10);
+INSERT INTO KHOSACH_NVBH VALUES ('CN01', 'Book14', 'Con Hang', 10);
+INSERT INTO KHOSACH_NVBH VALUES ('CN01', 'Book16', 'Con Hang', 10);
+INSERT INTO KHOSACH_NVBH VALUES ('CN01', 'Book19', 'Con Hang', 10);
+INSERT INTO KHOSACH_NVBH VALUES ('CN01', 'Book20', 'Het Hang', 10);
+
+INSERT INTO NHANVIEN VALUES ('NV01', 'Truong Nguyen Ngoc', 'Quang Nam', '0379868677', 4250000, 'CN01');
+INSERT INTO NHANVIEN VALUES ('NV02', 'Pham Ho Luong', 'An Giang', '0773915608', 3750000, 'CN01');
+INSERT INTO NHANVIEN VALUES ('NV03', 'Phan Tran Khanh Hung', 'Can Tho', '0773915608', 2750000, 'CN01');
+INSERT INTO NHANVIEN VALUES ('NV04', 'Le Binh Long', 'Can Tho', '0707496760', 2550000, 'CN01');
+INSERT INTO NHANVIEN VALUES ('NV05', 'Tran Huu Tri', 'Can Tho', '0762553224', 4750000, 'CN01');
+
+-- Tạo database link
+
+create public database link cn2_link connect to cn2 identified by "123456" using 'cn2';
+
+
+
+--Yêu cầu 1: 10 câu truy vấn:
