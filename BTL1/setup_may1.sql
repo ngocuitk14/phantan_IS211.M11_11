@@ -123,3 +123,63 @@ create public database link cn2_link connect to cn2 identified by "123456" using
 
 
 --Yêu cầu 1: 10 câu truy vấn:
+
+-- Câu 1: Đưa ra thông tin sách với tı̀nh trạng ‘Con Hang’ của tất cả các chi nhánh. Thông tin hiển thị (MaChiNhanh, MaSach, TenSach)
+SELECT MaChiNhanh, MaSach, TenSach 
+FROM cn1.SACH JOIN cn1.KHOSACH_NVBH 
+USING(MaSach) WHERE TinhTrang = 'Con Hang'
+UNION
+SELECT MaChiNhanh, MaSach, TenSach 
+FROM cn2.SACH@cn2_link JOIN cn2.KHOSACH_NVBH@cn2_link 
+USING(MaSach) WHERE TinhTrang = 'Con Hang';
+
+-- Câu 2: Tım sách với tı̀nh trạng ‘Con Hang’ và số lượng sách trong kho lớn hơn 135 tại tất cả chi nhánh. Thông tin hiển thị (MaSach, TenSach)
+SELECT MaChiNhanh, MaSach, TenSach
+FROM cn1.SACH JOIN cn1.KHOSACH_QLKHO USING(MaSach)
+WHERE SoLuong >= 135
+UNION
+SELECT MaChiNhanh, MaSach, TenSach
+FROM cn2.SACH@cn2_link JOIN cn2.KHOSACH_QLKHO@cn2_link USING(MaSach)
+WHERE SoLuong >= 135;
+
+-- Câu 3: Đưa ra thông tin sách gồm tên sách, ngày xuất bản, tác giả, giá tiền, số lượng, lần in, ngày nhập với những sách của chi nhánh mınh qu ̀ ản lý của nhà xuất bản 'Tre'
+SELECT DISTINCT TenSach, NgayXB, TacGia, SoLuong, NgayCapNhat, LanIn
+FROM cn1.KHOSACH_QLKHO join cn1.SACH USING(MaSach)
+WHERE NhaXuatBan = 'Trẻ';
+
+-- Câu 4: Đưa ra thông tin sách (Mã sách, tên sách) được phân phối đến tất cả chi nhánh với tình trạng hết hàng
+select MaChiNhanh, SACH.MaSach, TenSach from SACH, KHOSACH_QLKHO
+where SACH.MaSach = KHOSACH_QLKHO.MaSach
+Minus
+select MaChiNhanh, SACH.MaSach, TenSach from cn2.SACH@cn2_link,  cn2.KHOSACH_QLKHO@cn2_link
+where cn2.SACH.MaSach@cn2_link = cn2.KHOSACH_QLKHO.MaSach@cn2_link;
+
+--Câu 5: Tìm sách được phân phối tại chi nhánh 1 nhưng không có tại chi nhánh 2
+select MaSach, TenSach from SACH join KHOSACH_QLKHO using(MaSACH)
+where SoLuong = 0
+UNION
+select MaSach, TenSach from cn2.KHOSACH_QLKHO@cn2_link join cn2.SACH@cn2_link using(MaSach)
+where SoLuong = 0;
+
+-- Câu 6: Số Sách của mỗi NXB trong chi nhánh
+SELECT MaChiNhanh, NhaXuatBan, count(NhaXuatBan) as SoSach 
+FROM KHOSACH_QLKHO join SACH using (MaSach) 
+GROUP BY NhaXuatBan, MachiNhanh;
+
+-- Câu 7: Sách ở CN1 "Het Hang" nhưng "Con Hang" ở CN2
+SELECT MaSach FROM KHOSACH_NVBH WHERE TINHTRANG = 'Het Hang'
+INTERSECT
+SELECT MaSach FROM cn2.KHOSACH_NVBH@cn2_link WHERE TINHTRANG = 'Con Hang';
+
+-- Câu 8: Tìm sách có giá tiền cao nhất trong kho
+SELECT GiaTien, MaSach, TenSach, SoLuong FROM SACH join KHOSACH_QLKHO using (MaSach)
+    GROUP BY MaSach, TenSach, SoLuong, GiaTien
+    ORDER BY GiaTien DESC
+    FETCH FIRST ROW ONLY;
+
+-- Câu 9: Tìm sách được cập nhật trong khoảng thời gian 20/11 - 1/12
+SELECT MaSach, TenSach, SoLuong FROM SACH JOIN KHOSACH_QLKHO USING (MaSach) 
+    WHERE NgayCapNhat BETWEEN to_date('20-NOV-2021') AND to_date('1-DEC-2021');
+
+-- Câu 10: 
+SELECT MaSach, TenSach FROM SACH WHERE NhaXuatBan = 'NXB Tổng hợp TPHCM';
