@@ -1,7 +1,7 @@
 # Thông tin môn học
 
-- **Môn học:** Cơ sở dữ liệu phân tán
-- **Lớp:** IS211.M11
+- **Môn học:** Cơ sở dữ liệu phân tán 
+- **Lớp:** IS211.M11.1
 - **Giảng viên:**
   - ThS. Thái Bảo Trân
   - CN. Nguyễn Minh Nhựt
